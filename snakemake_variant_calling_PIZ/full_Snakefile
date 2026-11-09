@@ -1,0 +1,24 @@
+configfile: "config/config.yaml"
+
+SAMPLES = [
+    line.strip()
+    for line in open("samples.tsv")
+    if line.strip() and not line.startswith("sample")
+]
+
+INTERVALS = [
+    f"{i:04d}"
+    for i in range(1, config["intervals"]["windows"] + 1)
+]
+
+
+include: "rules/qc.smk"
+include: "rules/trim.smk"
+include: "rules/mapping.smk"
+include: "rules/gvcf.smk"
+include: "rules/jointgenotyping.smk"
+
+rule all:
+    input:
+        "results/11_joint_vcf/cohort.vcf.gz",
+        "results/11_joint_vcf/cohort.vcf.gz.tbi"

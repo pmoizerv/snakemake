@@ -1,0 +1,61 @@
+reference: resources/genome.fa
+
+adapters: resources/adapters.fa
+
+intervals:
+  windows: 50
+
+resources:
+  merging:
+    threads: 1
+    mem: 8
+    runtime: 20
+
+  fastqc:
+    threads: 1
+    mem: 2
+    runtime: 19
+
+  bbduk:
+    threads: 2
+    mem: 25
+    runtime: 119
+
+  bwa:
+    threads: 8
+    mem: 45
+    runtime: 599
+
+  fixmate:
+    mem: 20
+    runtime: 460
+
+  add_readgroups:
+    mem: 20
+    runtime: 460
+
+  cleansam:
+    mem: 20
+    runtime: 460
+
+  markduplicates:
+    threads: 4
+    mem: 32
+    runtime: 760
+
+  haplotypecaller:
+    threads: 8
+    mem: 12
+
+  genomicsdbimport:
+    threads: 8
+    mem: 8
+    batch_size: 20
+
+  genotypegvcfs:
+    threads: 4
+    mem: 8
+
+  concat:
+    threads: 2
+    mem: 8

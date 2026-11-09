@@ -1,0 +1,72 @@
+configfile: "config/config.yaml"
+
+SAMPLES = [
+    line.strip()
+    for line in open("samples.tsv")
+    if line.strip() and not line.startswith("sample")
+]
+
+from collections import defaultdict
+from glob import glob
+import os
+
+LANES = defaultdict(lambda: {"R1": [], "R2": []})
+
+for fq in glob("raw/*.fq.gz"):
+    fname = os.path.basename(fq)
+
+    # sample name = first 7 characters
+    sample = fname[:7]
+
+    if sample not in SAMPLES:
+        continue
+
+    if fname.endswith("_R1.fq.gz"):
+        LANES[sample]["R1"].append(fq)
+
+    elif fname.endswith("_R2.fq.gz"):
+        LANES[sample]["R2"].append(fq)
+
+for sample in LANES:
+    LANES[sample]["R1"].sort()
+    LANES[sample]["R2"].sort()
+
+for sample in SAMPLES:
+    if sample not in LANES:
+        raise ValueError(f"No FASTQ files found for sample {sample}")
+
+    if len(LANES[sample]["R1"]) != len(LANES[sample]["R2"]):
+        raise ValueError(
+            f"{sample}: unequal numbers of R1 and R2 files "
+            f"({len(LANES[sample]['R1'])} vs "
+            f"{len(LANES[sample]['R2'])})"
+        )
+
+INTERVALS = [
+    f"{i:04d}"
+    for i in range(1, config["intervals"]["windows"] + 1)
+]
+
+include: "rules/qc.smk"
+include: "rules/merge_lanes.smk"
+include: "rules/trim.smk"
+include: "rules/mapping.smk"
+include: "rules/gvcf.smk"
+include: "rules/jointgenotyping.smk"
+
+rule all:
+    input:
+        expand(
+            "results/05_mapping_stats/{sample}/{sample}.flagstat.txt",
+            sample=SAMPLES
+        ),
+        expand(
+            "results/05_mapping_stats/{sample}/{sample}.idxstats.txt",
+            sample=SAMPLES
+        ),
+        expand(
+            "results/05_mapping_stats/{sample}/{sample}.samstats.txt",
+            sample=SAMPLES
+        ),
+        "results/00_fastqc_raw/multiqc_report.html"
+# add the comma before if you uncomment 
