@@ -84,6 +84,7 @@ rule genotypegvcfs:
             GenotypeGVCFs \
             -R {config[reference]} \
             -V gendb://{input.db} \
+            -all-sites \
             -O {output.vcf}
 
         gatk IndexFeatureFile \
