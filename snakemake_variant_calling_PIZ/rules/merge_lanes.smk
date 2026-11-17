@@ -5,7 +5,6 @@ rule merge_lanes:
     output:
         r1=temp("results/01_merged/{sample}_R1.fq.gz"),
         r2=temp("results/01_merged/{sample}_R2.fq.gz")
-    job_name: "merge_{wildcards.sample}"
     threads:
         config["resources"]["merging"]["threads"]
     resources:

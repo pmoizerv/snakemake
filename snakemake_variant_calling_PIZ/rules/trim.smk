@@ -3,11 +3,10 @@ rule bbduk:
         r1="results/01_merged/{sample}_R1.fq.gz",
         r2="results/01_merged/{sample}_R2.fq.gz"
     output:
-        r1="results/02_trimmed/{sample}_R1.trim.fq.gz",
-        r2="results/02_trimmed/{sample}_R2.trim.fq.gz"
+        r1=temp("results/02_trimmed/{sample}_R1.trim.fq.gz"),
+        r2=temp("results/02_trimmed/{sample}_R2.trim.fq.gz")
     threads:
         config["resources"]["bbduk"]["threads"]
-    job_name: "trim_{wildcards.sample}"
     resources:
         mem_mb=config["resources"]["bbduk"]["mem"] * 1000,
         runtime=config["resources"]["bbduk"]["runtime"]

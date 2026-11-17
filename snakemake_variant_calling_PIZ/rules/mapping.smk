@@ -38,7 +38,6 @@ rule bwa_mem2:
         temp("results/04_bam/aligned/{sample}.bam")
     threads:
         config["resources"]["bwa"]["threads"]
-    job_name: "align_{wildcards.sample}"
     resources:
         mem_mb=config["resources"]["bwa"]["mem"] * 1000,
         runtime=config["resources"]["bwa"]["runtime"]
@@ -69,7 +68,6 @@ rule fixmate:
         mem=config["resources"]["fixmate"]["mem"] - 4,
         mem_mb=config["resources"]["fixmate"]["mem"] * 1000,
         runtime=config["resources"]["fixmate"]["runtime"]
-    job_name: "fixmate_{wildcards.sample}"
     params:
         ref=config["reference"]
     shell:
@@ -94,7 +92,6 @@ rule add_readgroups:
         mem=config["resources"]["fixmate"]["mem"] - 4,
         mem_mb=config["resources"]["add_readgroups"]["mem"] * 1000,
         runtime=config["resources"]["add_readgroups"]["runtime"]
-    job_name: "readgroup_{wildcards.sample}"
     shell:
         """
 	ml picard/3.4.0-Java-17
@@ -141,7 +138,6 @@ rule markduplicates:
         crai="results/04_bam/final/{sample}/{sample}.cram.crai"
     threads:
         config["resources"]["markduplicates"]["threads"]
-    job_name: "mdup_{wildcards.sample}"
     params:
         metrics="results/04_bam/final/{sample}/{sample}.metrics_2.txt",
         ref=config["reference"]
@@ -173,11 +169,9 @@ rule markduplicates:
 rule flagstat:
     input:
         cram="results/04_bam/final/{sample}/{sample}.cram",
-        ref=REF
     output:
         flag="results/05_mapping_stats/{sample}/{sample}.flagstat.txt",
         cov="results/05_mapping_stats/{sample}/{sample}.cov.txt"
-    job_name: "mainstats_{wildcards.sample}"
     resources:
         mem_mb=2000,
         runtime=25
@@ -187,7 +181,7 @@ rule flagstat:
 
         samtools flagstat {input.cram} > {output.flag}
 
-        samtools coverage --reference {input.ref} {input.cram} | {{
+        samtools coverage --reference {REF} {input.cram} | {{
             read -r header
             echo "$header"
             sort -k1,1V
@@ -212,7 +206,6 @@ rule idxstats:
 rule samstats:
     input:
         cram="results/04_bam/final/{sample}/{sample}.cram",
-        ref=REF
     output:
         "results/05_mapping_stats/{sample}/{sample}.samstats.txt"
     resources:
@@ -222,5 +215,5 @@ rule samstats:
         """
 	ml SAMtools/1.22.1-GCC-13.3.0
 
-        samtools stats --reference {input.ref} {input.cram} > {output}
+        samtools stats --reference {REF} {input.cram} > {output}
         """

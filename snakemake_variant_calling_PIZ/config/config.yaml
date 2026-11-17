@@ -28,20 +28,20 @@ resources:
 
   fixmate:
     mem: 20
-    runtime: 460
+    runtime: 330
 
   add_readgroups:
     mem: 20
-    runtime: 460
+    runtime: 330
 
   cleansam:
     mem: 20
-    runtime: 460
+    runtime: 330
 
   markduplicates:
     threads: 4
     mem: 32
-    runtime: 760
+    runtime: 539
 
   haplotypecaller:
     threads: 8

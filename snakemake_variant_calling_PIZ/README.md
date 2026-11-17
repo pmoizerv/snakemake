@@ -17,4 +17,8 @@ To get an unfiltered vcf by providing a list of samples of raw reads
 
 ## How to run
 From a screen, like:
-snakemake --executor slurm --jobs 100 --default-resources slurm_account=my_account --rerun-triggers mtime --keep-going --rerun-incomplete # (-n for a dry run)
+`snakemake --executor slurm --jobs 100 --default-resources slurm_account=MY_ACCOUNT --rerun-triggers mtime --keep-going --rerun-incomplete # (-n for a dry run)`
+
+or from haswell:
+
+`/proj/uppmax2026-1-228/private/.conda_envs/snakemake/bin/python -m snakemake --executor slurm --jobs 150 --default-resources slurm_account=MY_ACCOUNT slurm_partition=haswell --rerun-triggers mtime --keep-going --rerun-incomplete`

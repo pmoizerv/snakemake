@@ -15,8 +15,8 @@ LANES = defaultdict(lambda: {"R1": [], "R2": []})
 for fq in glob("raw/*.fq.gz"):
     fname = os.path.basename(fq)
 
-    # sample name = first 7 characters
-    sample = fname[:7]
+    # sample name = first 5 characters
+    sample = fname[:5]
 
     if sample not in SAMPLES:
         continue
@@ -67,6 +67,5 @@ rule all:
         expand(
             "results/05_mapping_stats/{sample}/{sample}.samstats.txt",
             sample=SAMPLES
-        ),
-        "results/00_fastqc_raw/multiqc_report.html"
-# add the comma before if you uncomment 
+        )
+#        "results/00_fastqc_raw/multiqc_report.html" # add the comma before if you uncomment 
